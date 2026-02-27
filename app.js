@@ -164,7 +164,7 @@ document.getElementById("locateBtn").onclick = () => {
    COMPTEUR INSTA
 ===================== */
 
-const followers = 1415;
+const followers = 2215;
 let current = 0;
 const el = document.getElementById("instaCount");
 
