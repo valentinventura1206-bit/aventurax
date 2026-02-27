@@ -27,15 +27,6 @@
     "insta": "https://www.instagram.com/p/DRe-2L3DBQO/?img_index=1",
     "type": "done"
   },
-  {
-    "id": "nantes-varades",
-    "title": "Nantes Varades",
-    "date": "14/07/2025",
-    "time": "04:16:35",
-    "trace": "nantes-varades.geojson",
-    "photos": [],
-    "type": "done"
-  },
 
 {
   "id": "mystere-1",
@@ -59,18 +50,18 @@
 
 {
   "id": "angers-ocean",
-  "title": "Angers Océan",
+  "title": "Angers-Océan",
   "date": "21/02/2026",
-  "time": "??:??:??",
+  "time": "08:03:55",
   "trace": "angers-ocean.geojson",
   "photos": [],
   "type": "done"
 },
 
 {
-  "id": "Traversée en Wingfoil",
-  "title": "Traversée en Wingfoil",
-  "date": "05/04/2026",
+  "id": "NO-Pornic Wing",
+  "title": "NO-Pornic Wing",
+  "date": "?05/04/2026",
   "time": "??:??:??",
   "trace": "traversee-ocean.geojson",
   "photos": [],
