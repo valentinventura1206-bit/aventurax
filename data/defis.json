@@ -92,5 +92,13 @@
     "insta": "https://www.instagram.com/p/DUz5edNjJBI/?img_index=1",
     "type": "done"
 
-}
-]
+},
+{
+  "id": "Atlantic'Trail",
+  "title": "Atlantic'Trail",
+  "date": "28/02/2026",
+  "time": "??:??:??",
+  "trace": "atlantictrail.geojson",
+  "photos": [],
+  "type": "future"
+},
