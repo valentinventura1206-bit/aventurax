@@ -16,7 +16,7 @@
   },
   {
     "id": "mont-nantes",
-    "title": "Le Mont Nantes",
+    "title": "Ascension du Mont Nantes",
     "date": "22/11/2025",
     "time": "08:45:22",
     "story": "Une ascension difficile sous la pluie, mais une vue incroyable au sommet.",
@@ -79,6 +79,18 @@
 	"assets/photos/lacgele3.png"
 ],
     "type": "done"
-}
+},
+  {
+    "id": "Coeur",
+    "title": "Saint-Valentin",
+    "date": "14/02/2026",
+    "time": "01:33:04",
+    "story": "Une boucle pour l'amour.",
+    "trace": "coeur.geojson",
+    "photos": [
+    ],
+    "insta": "https://www.instagram.com/p/DUz5edNjJBI/?img_index=1",
+    "type": "done"
 
+}
 ]
