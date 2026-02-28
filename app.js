@@ -1,4 +1,9 @@
-const map = L.map("map").setView([47.2184, -1.5536], 12);
+const isMobile = window.innerWidth < 768;
+
+const map = L.map("map", {
+  zoomControl: false,
+  attributionControl: false
+}).setView([47.2184, -1.5536], 12);
 
 /* =====================
    BASE MAP
@@ -58,16 +63,24 @@ function addLabel(layer, defi) {
 ===================== */
 
 function popupHTML(defi){
-  if(defi.type==="mystery") return `<div class="story-popup"><h3>❓ Défi mystère</h3></div>`;
-  if(defi.type==="future") return `<div class="story-popup"><h3>⏭ Prochain défi</h3></div>`;
+
+  if(defi.type==="mystery"){
+    return `
+      <div class="story-popup">
+        <h3>❓ Défi mystère</h3>
+      </div>`;
+  }
 
   return `
     <div class="story-popup">
       <h3>${defi.title}</h3>
-      ${defi.date}<br>${defi.time}
+      <p>📅 ${defi.date}</p>
+      <p>⏱ Temps : <strong>${defi.time}</strong></p>
     </div>
   `;
+  l.bindPopup(popupHTML(defi));
 }
+
 
 /* =====================
    CHARGEMENT DES DEFIS
@@ -96,10 +109,20 @@ fetch("data/defis.json")
 
   registerExploreLayer(l);
 
+  l.on("mouseover", () => {
+  l.setStyle({ weight: 10 });
+});
+
+l.on("mouseout", () => {
+  l.setStyle(styleByType(defi.type));
+});
+
   // animation continue
+if(!isMobile){
   setTimeout(() => {
     l.getElement()?.classList.add("draw-flow");
   }, 100);
+}
 
           registerExploreLayer(l);
           
@@ -143,30 +166,12 @@ filterButtons.forEach(btn=>{
 });
 
 /* =====================
-   GEOLOCALISATION
-===================== */
-
-document.getElementById("locateBtn").onclick = () => {
-  navigator.geolocation.getCurrentPosition(p => {
-
-    const m = L.circleMarker(
-      [p.coords.latitude, p.coords.longitude],
-      { radius:7 }
-    ).addTo(map);
-
-    map.setView([p.coords.latitude, p.coords.longitude],13);
-
-    setTimeout(()=>map.removeLayer(m),15000);
-  });
-};
-
-/* =====================
    COMPTEUR INSTA
 ===================== */
 
-const followers = 2215;
+const followers = 1415;
 let current = 0;
-const el = document.getElementById("instaCount");
+const el = document.getElementById("aventurax_off");
 
 const anim = setInterval(()=>{
   current += Math.ceil(followers/80);
@@ -244,6 +249,16 @@ function spawnCloud(){
   cloudLayer.appendChild(cloud);
 
   setTimeout(()=>cloud.remove(), 220000);
+
+  if(!isMobile){
+
+  for(let i=0;i<9;i++) spawnCloud();
+  setInterval(spawnCloud, 16000);
+
+  map.on("zoom", ()=>{
+    const z = map.getZoom();
+    cloudLayer.style.opacity = Math.max(0, 1 - (z - 10) * 0.25);
+  });
 }
 
 /* ciel déjà vivant */
@@ -255,4 +270,5 @@ setInterval(spawnCloud, 16000);
 map.on("zoom", ()=>{
   const z = map.getZoom();
   cloudLayer.style.opacity = Math.max(0, 1 - (z - 10) * 0.25);
-});
+  });
+  }

@@ -72,8 +72,12 @@ html, body {
 .map-label {
   color: white;
   font-weight: 900;
-  font-size: 14px;
+  font-size: 16px;
+  text-align: center;
+  text-shadow: 0 0 8px rgba(0,0,0,.9);
+  letter-spacing: 0.5px;
   pointer-events: none;
+  transform: translateY(-8px);
 }
 
 .label-done { color: #ffd700; }
@@ -100,6 +104,19 @@ html, body {
 /* Popups */
 .story-popup {
   text-align: center;
+  color: white;
+  font-weight: 600;
+}
+
+.leaflet-popup-content-wrapper {
+  background: rgba(10,10,15,.95);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 20px rgba(0,0,0,.6);
+}
+
+.leaflet-popup-tip {
+  background: rgba(10,10,15,.95);
 }
 
 .story-popup img {
@@ -276,4 +293,20 @@ html, body {
 @keyframes cloudMove{
   from { transform: translateX(var(--startX)) translateY(var(--drift)); }
   to   { transform: translateX(var(--endX)) translateY(calc(var(--drift) * -1)); }
+}
+.leaflet-interactive {
+  transition: all .3s ease;
+}
+
+.leaflet-interactive:hover {
+  stroke-width: 10 !important;
+  filter: drop-shadow(0 0 12px #4f8cff);
+  cursor: pointer;
+}
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+#map {
+  will-change: transform;
 }
