@@ -124,6 +124,16 @@ fetch("data/defis.json")
                   if (el) el.style.pointerEvents = "none";
                 }, 0);
                 return;
+                
+              if(defi.type==="mystery"){
+
+  setTimeout(()=>{
+    const el = l.getElement();
+    if(el){
+      el.classList.add("trace-mystery");
+      el.style.pointerEvents = "none";
+    }
+  }, 0);
               }
 
               // Popup pour done / future / annexe
