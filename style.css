@@ -61,10 +61,15 @@ html, body {
 }
 
 .trace-mystery {
-  stroke-dasharray: 2 30;
-  opacity:.5;
+  stroke-dasharray:none !important;
+  filter:blur(6px) drop-shadow(0 0 10px #000);
+  opacity:.6;
+  pointer-events:none;
 }
-
+.trace-annexe {
+  stroke-dasharray: 4 12;
+  filter: drop-shadow(0 0 6px #C1FDC4);
+}
 /* LABELS */
 .map-label {
   font-weight:900;
@@ -79,6 +84,7 @@ html, body {
 .label-done { color:#7DFF84; }
 .label-future { color:#FFF47C; }
 .label-mystery { color:#aaa; }
+.label-annexe { color:#C1FDC4; }
 
 /* ANIMATION TRACE */
 .leaflet-interactive.draw-flow {
@@ -124,4 +130,36 @@ html, body {
 @keyframes cloudMove{
   from { transform: translateX(var(--startX)); }
   to   { transform: translateX(var(--endX)); }
+}
+/* POPUP PREMIUM */
+.story-popup{
+  color:white;
+  text-align:center;
+}
+
+.story-popup img{
+  width:100%;
+  border-radius:8px;
+  margin-top:6px;
+}
+
+/* INSTAGRAM COUNTER */
+.insta-counter{
+  position:absolute;
+  bottom:25px;
+  left:50%;
+  transform:translateX(-50%);
+  background:rgba(0,0,0,.8);
+  padding:14px 24px;
+  border-radius:18px;
+  color:white;
+  text-align:center;
+  backdrop-filter:blur(10px);
+  z-index:1000;
+}
+
+#instaCount{
+  font-size:34px;
+  font-weight:900;
+  color:var(--future);
 }
