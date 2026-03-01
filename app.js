@@ -275,8 +275,8 @@ map.on("zoom", ()=>{
 
 /* Rendu carte plus gris / océan plus clair */
 .leaflet-tile {
-  filter: 
-    brightness(1.15)
-    contrast(0.85)
-    grayscale(60%);
+  filter:
+    brightness(1.3)
+    contrast(0.7)
+    grayscale(100%);
 }
