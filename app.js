@@ -38,7 +38,7 @@ function styleByType(type) {
     return { color: "#777", weight: 6, className: "trace-mystery" };
 
   if (type === "annexe")
-    return { color: "#C1FDC4", weight: 4, className: "trace-annexe" };
+    return { color: "#96C9FF", weight: 4, className: "trace-annexe" };
 
   return { color: "#fff", weight: 4 };
 }
@@ -55,7 +55,7 @@ function addLabel(layer, defi) {
   if (defi.type === "done") { icon = "🏆 "; cls += " label-done"; }
   if (defi.type === "future") { icon = "⏳ "; cls += " label-future"; }
   if (defi.type === "mystery") { icon = "❓ "; cls += " label-mystery"; }
-  if (defi.type === "annexe") { icon = "🥇 "; cls += " label-annexe"; }
+  if (defi.type === "annexe") { icon = "🔵 "; cls += " label-annexe"; }
 
   const label = L.marker(pos, {
     icon: L.divIcon({ className: cls, html: icon + (defi.title || "") }),
@@ -106,36 +106,39 @@ fetch("data/defis.json")
         .then(r => r.json())
         .then(trace => {
 
-        L.geoJSON(trace,{
-  style:()=>styleByType(defi.type),
+          L.geoJSON(trace, {
+            style: () => styleByType(defi.type),
 
-  onEachFeature:(f,l)=>{
+            onEachFeature: (f, l) => {
 
-    const label = addLabel(l,defi);
+              const label = addLabel(l, defi);
 
-    l.bindPopup(popupHTML(defi));
+              if (defi.type !== "mystery") {
+                l.bindPopup(popupHTML(defi));
 
-    l.on("mouseover",()=>{
-      l.setStyle({weight:8});
-    });
+                if (defi.type === "done" || defi.type === "annexe") {
+                  l.on("click", () => l.openPopup());
+                }
+              }
 
-    l.on("mouseout",()=>{
-      l.setStyle(styleByType(defi.type));
-    });
+              l.on("mouseover", () => {
+                l.setStyle({ weight: 8 });
+              });
 
-    setTimeout(()=>{
-      l.getElement()?.classList.add("draw-flow");
-    },100);
+              l.on("mouseout", () => {
+                l.setStyle(styleByType(defi.type));
+              });
 
-    if(defi.type==="done" || defi.type==="annexe"){
-      l.on("click", ()=> l.openPopup());
-    }
+             setTimeout(()=>{
+  l.getElement()?.classList.add("draw-flow");
+},100);
+              }
 
-    allLayers[defi.type].push(l);
-    allLabels[defi.type].push(label);
-  }
+              allLayers[defi.type].push(l);
+              allLabels[defi.type].push(label);
+            }
 
-}).addTo(map);
+          }).addTo(map);
 
         });
 
