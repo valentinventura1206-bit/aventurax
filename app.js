@@ -133,8 +133,6 @@ fetch("data/defis.json")
   l.getElement()?.classList.add("draw-flow");
 },100);
               }
-
-              allLayers[defi.type].push(l);
               allLabels[defi.type].push(label);
             }
 
