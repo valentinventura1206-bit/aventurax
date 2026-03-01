@@ -106,37 +106,36 @@ fetch("data/defis.json")
         .then(r => r.json())
         .then(trace => {
 
-          L.geoJSON(trace, {
-            style: () => styleByType(defi.type),
+        L.geoJSON(trace,{
+  style:()=>styleByType(defi.type),
 
-            onEachFeature: (f, l) => {
+  onEachFeature:(f,l)=>{
 
-              const label = addLabel(l, defi);
+    const label = addLabel(l,defi);
 
-              if (defi.type !== "mystery") {
-                l.bindPopup(popupHTML(defi));
+    l.bindPopup(popupHTML(defi));
 
-                if (defi.type === "done" || defi.type === "annexe") {
-                  l.on("click", () => l.openPopup());
-                }
-              }
+    l.on("mouseover",()=>{
+      l.setStyle({weight:8});
+    });
 
-              l.on("mouseover", () => {
-                l.setStyle({ weight: 8 });
-              });
+    l.on("mouseout",()=>{
+      l.setStyle(styleByType(defi.type));
+    });
 
-              l.on("mouseout", () => {
-                l.setStyle(styleByType(defi.type));
-              });
+    setTimeout(()=>{
+      l.getElement()?.classList.add("draw-flow");
+    },100);
 
-             setTimeout(()=>{
-  l.getElement()?.classList.add("draw-flow");
-},100);
-              }
-              allLabels[defi.type].push(label);
-            }
+    if(defi.type==="done" || defi.type==="annexe"){
+      l.on("click", ()=> l.openPopup());
+    }
 
-          }).addTo(map);
+    allLayers[defi.type].push(l);
+    allLabels[defi.type].push(label);
+  }
+
+}).addTo(map);
 
         });
 
