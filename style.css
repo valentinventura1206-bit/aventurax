@@ -88,16 +88,15 @@ html, body {
 .label-annexe { color:#C1FDC4; }
 
 /* ANIMATION TRACE */
-.leaflet-interactive.draw-flow {
-  stroke-dasharray: 20 20;
-  animation: flowLine 30s linear infinite;
+.draw-flow{
+  stroke-dasharray: 12 18;
+  animation: flow 2s linear infinite;
 }
 
-@keyframes flowLine {
-  from { stroke-dashoffset: 0; }
-  to { stroke-dashoffset: -200; }
+@keyframes flow{
+  from{ stroke-dashoffset: 0; }
+  to{ stroke-dashoffset: -30; }
 }
-
 /* HOVER */
 .leaflet-interactive {
   transition: all .3s ease;
