@@ -1,321 +1,200 @@
-html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  border-radius: 5px;
-  background: #050508;
-  font-family: Inter, sans-serif;
+html,body{
+margin:0;
+padding:0;
+height:100%;
+background:#050508;
+font-family:Inter,sans-serif;
+overflow:hidden;
 }
 
-#map {
-  height: 100vh;
-  width: 100%;
+/* HERO */
+.hero{
+position:absolute;
+top:20px;
+left:50%;
+transform:translateX(-50%);
+z-index:1000;
+text-align:center;
 }
 
-/* Bouton */
-.locate-btn {
-  position: absolute;
-  top: 20px;
-  left: 50px;
-  z-index: 1000;
-  padding: 10px 14px;
-  border: none;
-  border-radius: 10px;
-  font-weight: 700;
-  background: white;
-  cursor: pointer;
+.avatar{
+width:90px;
+height:90px;
+border-radius:50%;
+border:3px solid #7DFF84;
+object-fit:cover;
+box-shadow:0 0 20px #7DFF84;
 }
 
-/* Compteur Instagram */
-.insta-counter {
-  position: absolute;
-  bottom: 40px;
-  right: 40px;
-  background: rgba(0,0,0,.7);
-  backdrop-filter: blur(2px);
-  padding: 14px 20px;
-  border-radius: 15px;
-  color: white;
-  text-align: center;
-  box-shadow: 0 0 12px rgba(255,255,255,.15);
-  z-index: 1000;
+.hero h1{
+margin-top:10px;
+color:white;
+font-weight:900;
+font-size:22px;
 }
 
-#instaCount {
-  font-size: 32px;
-  font-weight: 900;
-  color: #ffd700;
+/* MAP */
+#map{
+height:100vh;
+width:100%;
 }
 
-.insta-label {
-  font-size: 12px;
-  opacity: .7;
+/* COLORS */
+:root{
+--done:#7DFF84;
+--current:#FFF47C;
+--future:#888;
+--mystery:#555;
 }
 
-/* Tracés */
-.trace-done {
-  filter: drop-shadow(0 0 6px #7DFF84);
+/* LAYERS */
+.trace-done{
+color:var(--done);
+weight:5;
+filter:drop-shadow(0 0 8px var(--done));
 }
 
-.trace-future {
-  stroke-dasharray: 5 12;
-  filter: drop-shadow(0 0 6px #FFF47C);
+.trace-current{
+color:var(--current);
+weight:7;
+filter:drop-shadow(0 0 14px var(--current));
 }
 
-.trace-mystery {
-  filter: blur(4px);
-  stroke-dasharray: 4 10;
-  opacity: .5;
+.trace-future{
+color:var(--future);
+dashArray:5 15;
 }
 
-/* Labels */
-.map-label {
-  color: #ffd700;
-  font-weight: 900;
-  font-size: 16px;
-  text-align: center;
-  white-space: nowrap;
-  transform: translate(-50%, -50%);
-  text-shadow: 0 0 12px rgba(0,0,0,.9);
-  pointer-events: none;
+.trace-mystery{
+opacity:.3;
 }
 
-.label-done { color: #7DFF84; }
-.label-future { color: #FFF47C; }
-.label-mystery { color: #aaa; }
-
-/* Progress */
-.progress-bar {
-  width: 80%;
-  height: 14px;
-  background: #222;
-  margin: 30px auto;
-  border-radius: 20px;
-  overflow: hidden;
+/* LABELS */
+.map-label{
+font-weight:900;
+text-align:center;
+white-space:nowrap;
+text-shadow:0 0 10px black;
+transform:translate(-50%,-50%);
+pointer-events:none;
 }
 
-.progress-fill {
-  height: 100%;
-  width: 0%;
-  background: linear-gradient(90deg, gold, #4f8cff);
-  transition: 1s;
+.label-done{color:var(--done);}
+.label-current{color:var(--current);font-size:22px;}
+.label-future{color:#aaa;}
+.label-mystery{color:#666;}
+
+/* PANEL */
+.info-panel{
+position:absolute;
+bottom:120px;
+left:50%;
+transform:translateX(-50%);
+background:rgba(0,0,0,.9);
+padding:20px 30px;
+border-radius:20px;
+color:white;
+text-align:center;
+backdrop-filter:blur(10px);
+box-shadow:0 0 30px black;
+z-index:1000;
+width:90%;
+max-width:400px;
 }
 
-/* Popups */
-.story-popup {
-  text-align: center;
-  color: white;
-  font-weight: 600;
+.hidden{display:none;}
+
+.info-panel h2{
+margin:0;
+font-size:22px;
 }
 
-.leaflet-popup-content-wrapper {
-  background: rgba(10,10,15,.95);
-  border-radius: 16px;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 0 20px rgba(0,0,0,.6);
+.info-panel .time{
+font-size:20px;
+margin:10px 0;
+color:var(--done);
 }
 
-.leaflet-popup-tip {
-  background: rgba(10,10,15,.95);
+.gpx-btn{
+display:inline-block;
+padding:10px 18px;
+background:var(--done);
+color:black;
+font-weight:700;
+border-radius:12px;
+text-decoration:none;
+margin-top:10px;
 }
 
-.story-popup img {
-  width: 100%;
-  border-radius: 6px;
-  margin-top: 4px;
+/* FOLLOWERS */
+.followers{
+position:absolute;
+bottom:30px;
+left:50%;
+transform:translateX(-50%);
+text-align:center;
+color:white;
+z-index:1000;
 }
 
-/* Glow animé */
-.trace-done {
-  animation: glowPulse 1.5s ease-in-out infinite alternate;
+#followersCount{
+font-size:38px;
+font-weight:900;
+color:var(--current);
 }
 
-@keyframes glowPulse {
-  from { filter: drop-shadow(0 0 6px white); }
-  to { filter: drop-shadow(0 0 12px white); }
-}
-.insta-goals{
-  position:absolute;
-  bottom:140px;
-  right:20px;
-  display:flex;
-  gap:10px;
-  z-index:1000;
+.followers-label{
+font-size:13px;
+opacity:.7;
 }
 
-.goal{
-  background:rgba(255,255,255,.08);
-  border:1px solid rgba(255,255,255,.2);
-  padding:8px 12px;
-  border-radius:12px;
-  color:white;
-  font-weight:700;
-  font-size:13px;
-  opacity:.6;
-  transition:.3s ease;
-}
-
-.goal.reached{
-  opacity:1;
-  color:gold;
-  box-shadow:0 0 12px gold;
-  transform:scale(1.05);
-}
-
-.goal.active{
-  opacity:1;
-  border-color:#4f8cff;
-  box-shadow:0 0 10px #4f8cff;
-}
-.goal.reached{
-  animation:pop .15s ease;
-}
-
-@keyframes pop{
-  0%{transform:scale(.7)}
-  100%{transform:scale(1.05)}
-}
+/* FILTERS */
 .filters{
-  position:absolute;
-  top:20px;
-  left:50%;
-  transform:translateX(-50%);
-  display:flex;
-  gap:10px;
-  z-index:1000;
+position:absolute;
+top:20px;
+right:20px;
+display:flex;
+gap:8px;
+z-index:1000;
 }
 
-.filter-btn{
-  background:rgba(0,0,0,.6);
-  color:white;
-  border:1px solid rgba(255,255,255,.2);
-  padding:8px 14px;
-  border-radius:14px;
-  font-weight:700;
-  cursor:pointer;
-  backdrop-filter:blur(6px);
-  transition:.3s ease;
+.filters button{
+background:rgba(0,0,0,.6);
+border:1px solid #333;
+color:white;
+padding:8px 12px;
+border-radius:14px;
+cursor:pointer;
+font-weight:700;
 }
 
-.filter-btn:hover{
-  transform:scale(1.05);
+.filters button.active{
+background:var(--done);
+color:black;
 }
 
-.filter-btn.active{
-  background:#4f8cff;
-  border-color:#4f8cff;
-  box-shadow:0 0 12px #4f8cff;
-}
-.leaflet-interactive{
-  transition: opacity .4s ease;
-}
-/* Animation continue du tracé */
+/* MOBILE */
+@media(max-width:768px){
 
-.leaflet-interactive.draw-flow {
-  stroke-dasharray: 20 20;
-  animation: flowLine 30.5s linear infinite;
+.hero{
+top:10px;
 }
 
-/* DONE = trait plein propre */
-.leaflet-interactive.trace-done{
-  stroke-dasharray: none;
-  opacity: 1;
+.avatar{
+width:70px;
+height:70px;
 }
 
-/* FUTUR = pointillé (statique) */
-.leaflet-interactive.trace-future{
-  stroke-dasharray: 2 30;
+.filters{
+bottom:90px;
+top:auto;
+right:50%;
+transform:translateX(50%);
+flex-wrap:wrap;
 }
 
-/* MYSTÈRE = discret */
-.leaflet-interactive.trace-mystery{
-  stroke-dasharray: 2 30;
-  opacity: .5;
+.info-panel{
+bottom:140px;
 }
 
-@keyframes flowLine {
-  from {
-    stroke-dashoffset: 0;
-  }
-  to {
-    stroke-dashoffset: -200;
-  }
-}
-/* Clouds overlay */
-#cloudLayer{
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  z-index:10000; /* AU-DESSUS de Leaflet */
-  overflow:hidden;
-}
-
-.cloud{
-  position:absolute;
-  width:420px;
-  height:240px;
-  border-radius:50%;
-  background:
-    radial-gradient(circle at 20% 40%, rgba(255,255,255,.9), transparent 20%),
-    radial-gradient(circle at 60% 30%, rgba(255,255,255,.8), transparent 35%),
-    radial-gradient(circle at 80% 60%, rgba(255,255,255,.7), transparent 25%),
-    radial-gradient(circle at 40% 70%, rgba(255,255,255,.85), transparent 50%);
-  filter: blur(30px);
-  opacity:85;
-  animation: cloudMove linear infinite;
-}
-
-@keyframes cloudMove{
-  from{ transform:translateX(-500px); }
-  to{ transform:translateX(120vw); }
-}
-
-.cloud::after{
-  content:"";
-  position:absolute;
-  inset:-30%;
-  background:
-    radial-gradient(circle, rgba(255,255,255,.35), transparent 70%);
-  filter: blur(130px);
-}
-.cloud{
-  position:absolute;
-  border-radius:50%;
-  background:
-    radial-gradient(circle at 20% 40%, rgba(255,255,255,.75), transparent 65%),
-    radial-gradient(circle at 55% 30%, rgba(255,255,255,.6), transparent 70%),
-    radial-gradient(circle at 80% 65%, rgba(255,255,255,.45), transparent 75%);
-  filter: blur(26px);
-  animation: cloudMove linear infinite;
-  will-change: transform;
-}
-
-@keyframes cloudMove{
-  from { transform: translateX(var(--startX)) translateY(var(--drift)); }
-  to   { transform: translateX(var(--endX)) translateY(calc(var(--drift) * -1)); }
-}
-.leaflet-interactive {
-  transition: all .3s ease;
-}
-
-.leaflet-interactive:hover {
-  stroke-width: 10 !important;
-  filter: drop-shadow(0 0 12px #4f8cff);
-  cursor: pointer;
-}
-* {
-  -webkit-tap-highlight-color: transparent;
-}
-
-#map {
-  will-change: transform;
-}
-
-.leaflet-tile {
-  filter:
-    grayscale(100%)
-    brightness(1.2)
-    sepia(40%)
-    hue-rotate(185deg)
-    saturate(350%);
 }
