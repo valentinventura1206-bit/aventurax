@@ -129,10 +129,9 @@ fetch("data/defis.json")
                 l.setStyle(styleByType(defi.type));
               });
 
-              if (!isMobile) {
-                setTimeout(() => {
-                  l.getElement()?.classList.add("draw-flow");
-                }, 100);
+             setTimeout(()=>{
+  l.getElement()?.classList.add("draw-flow");
+},100);
               }
 
               allLayers[defi.type].push(l);
