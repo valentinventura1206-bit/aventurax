@@ -63,7 +63,7 @@ html, body {
 .trace-mystery {
   stroke: #888 !important;
   stroke-width: 6 !important;
-  filter: blur(8px) drop-shadow(0 0 12px rgba(0,0,0,.9));
+  filter: blur(8px) drop-shadow(0 0 20px rgba(0,0,0,.9));
   opacity: 0.6;
   pointer-events: none; /* pas cliquable */
 }
