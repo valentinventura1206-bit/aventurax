@@ -17,8 +17,19 @@ L.tileLayer(
 ).addTo(map);
 
 /* STOCKAGE */
-const allLayers = {done:[],future:[],mystery:[]};
-const allLabels = {done:[],future:[],mystery:[]};
+const allLayers = {
+  done:[],
+  future:[],
+  mystery:[],
+  annexe:[]
+};
+
+const allLabels = {
+  done:[],
+  future:[],
+  mystery:[],
+  annexe:[]
+};
 
 /* STYLES */
 function styleByType(type){
@@ -28,6 +39,8 @@ function styleByType(type){
     return {color:"#FFF47C",weight:6,className:"trace-future"};
   if(type==="mystery")
     return {color:"#888",weight:5,className:"trace-mystery"};
+  if(type==="annexe")
+    return {color:"##C1FDC4",weight:4,className:"trace-annexe"};
 }
 
 /* LABELS */
@@ -55,14 +68,27 @@ function addLabel(layer,defi){
 
 /* POPUPS */
 function popupHTML(defi){
-  if(defi.type==="mystery")
-    return `<div><h3>❓ Défi mystère</h3></div>`;
+
+  if(defi.type==="mystery"){
+    return `<div class="story-popup">
+              <h3>🔒 Défi mystère</h3>
+            </div>`;
+  }
+
+  let photosHTML = "";
+
+  if(defi.photos && defi.photos.length){
+    defi.photos.forEach(p=>{
+      photosHTML += `<img src="${p}" loading="lazy">`;
+    });
+  }
 
   return `
-    <div>
+    <div class="story-popup">
       <h3>${defi.title}</h3>
       <p>📅 ${defi.date}</p>
       <p>⏱ ${defi.time}</p>
+      ${photosHTML}
     </div>
   `;
 }
@@ -102,6 +128,11 @@ fetch("data/defis.json")
           allLayers[defi.type].push(l);
           allLabels[defi.type].push(label);
         }
+        l.bindPopup(popupHTML(defi));
+
+if(defi.type==="done" || defi.type==="annexe"){
+  l.on("click", ()=> l.openPopup());
+}
       }).addTo(map);
 
     });
@@ -157,3 +188,16 @@ if(!isMobile){
   for(let i=0;i<6;i++) spawnCloud();
   setInterval(spawnCloud,15000);
 }
+const instaEl = document.getElementById("instaCount");
+
+let followers = 2258;
+
+function updateFollowers(){
+  followers += Math.floor(Math.random()*3);
+  instaEl.textContent = followers.toLocaleString();
+}
+
+updateFollowers();
+
+/* 1 fois par jour */
+setInterval(updateFollowers, 86400000);
