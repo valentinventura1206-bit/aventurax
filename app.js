@@ -151,7 +151,7 @@ fetch("data/defis.json")
 
 /* =====================
    FILTRES
-===================== */,
+===================== */
 const filterButtons = document.querySelectorAll(".filter-btn");
 
 function showOnly(type) {
