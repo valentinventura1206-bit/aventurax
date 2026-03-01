@@ -38,7 +38,7 @@ function styleByType(type) {
     return { color: "#777", weight: 6, className: "trace-mystery" };
 
   if (type === "annexe")
-    return { color: "#96C9FF", weight: 4, className: "trace-annexe" };
+    return { color: "#C1FDC4", weight: 4, className: "trace-annexe" };
 
   return { color: "#fff", weight: 4 };
 }
@@ -55,7 +55,7 @@ function addLabel(layer, defi) {
   if (defi.type === "done") { icon = "🏆 "; cls += " label-done"; }
   if (defi.type === "future") { icon = "⏳ "; cls += " label-future"; }
   if (defi.type === "mystery") { icon = "❓ "; cls += " label-mystery"; }
-  if (defi.type === "annexe") { icon = "🔵 "; cls += " label-annexe"; }
+  if (defi.type === "annexe") { icon = "🥇 "; cls += " label-annexe"; }
 
   const label = L.marker(pos, {
     icon: L.divIcon({ className: cls, html: icon + (defi.title || "") }),
