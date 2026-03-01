@@ -150,11 +150,11 @@ html, body {
   left:50%;
   transform:translateX(-50%);
   background:rgba(0,0,0,.8);
-  padding:14px 24px;
-  border-radius:18px;
+  padding:10px 16px;
+  border-radius:13px;
   color:white;
   text-align:center;
-  backdrop-filter:blur(10px);
+  backdrop-filter:blur(40px);
   z-index:1000;
 }
 
