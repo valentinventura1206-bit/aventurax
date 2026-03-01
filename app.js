@@ -127,7 +127,46 @@ fetch("data/defis.json")
               }
 
               // Popup pour done / future / annexe
-              l.bindPopup(popupHTML(defi), { closeButton: true, autoPan: true });
+     l.on("click", (e) => {
+  showCustomPopup(e, defi);
+});
+
+  // Supprime ancien popup si existe
+  const old = document.querySelector(".custom-popup");
+  if (old) old.remove();
+
+  const popup = document.createElement("div");
+  popup.className = "custom-popup";
+
+  let photosHTML = "";
+  if (defi.photos && defi.photos.length) {
+    photosHTML = defi.photos
+      .map(p => `<img src="${p}" loading="lazy">`)
+      .join("");
+  }
+
+  popup.innerHTML = `
+    <div class="popup-content">
+      <div class="popup-close">✕</div>
+      <h2>${defi.title}</h2>
+      <div class="popup-meta">
+        <span>📅 ${defi.date}</span>
+        <span>⏱ ${defi.time}</span>
+      </div>
+      <p class="popup-story">${defi.story || ""}</p>
+      <div class="popup-photos">${photosHTML}</div>
+    </div>
+  `;
+
+  document.body.appendChild(popup);
+
+  // Position exactement au clic
+  const point = map.latLngToContainerPoint(e.latlng);
+  popup.style.left = point.x + "px";
+  popup.style.top = point.y + "px";
+
+  popup.querySelector(".popup-close").onclick = () => popup.remove();
+}
 
               // Cliquable sur le tracé (done/annexe surtout)
               l.on("click", () => l.openPopup());
