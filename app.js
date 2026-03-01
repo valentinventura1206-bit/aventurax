@@ -105,35 +105,40 @@ fetch("data/defis.json")
     .then(trace=>{
 
       L.geoJSON(trace,{
-        style:()=>styleByType(defi.type),
-        onEachFeature:(f,l)=>{
+  style:()=>styleByType(defi.type),
 
-          const label=addLabel(l,defi);
-          l.bindPopup(popupHTML(defi));
+  onEachFeature:(f,l)=>{
 
-          l.on("mouseover",()=>{
-            l.setStyle({weight:8});
-          });
+    const label=addLabel(l,defi);
 
-          l.on("mouseout",()=>{
-            l.setStyle(styleByType(defi.type));
-          });
+    // Mystère = pas cliquable
+    if(defi.type!=="mystery"){
+      l.bindPopup(popupHTML(defi));
 
-          if(!isMobile){
-            setTimeout(()=>{
-              l.getElement()?.classList.add("draw-flow");
-            },100);
-          }
+      if(defi.type==="done" || defi.type==="annexe"){
+        l.on("click", ()=> l.openPopup());
+      }
+    }
 
-          allLayers[defi.type].push(l);
-          allLabels[defi.type].push(label);
-        }
-        l.bindPopup(popupHTML(defi));
+    l.on("mouseover",()=>{
+      l.setStyle({weight:8});
+    });
 
-if(defi.type==="done" || defi.type==="annexe"){
-  l.on("click", ()=> l.openPopup());
-}
-      }).addTo(map);
+    l.on("mouseout",()=>{
+      l.setStyle(styleByType(defi.type));
+    });
+
+    if(!isMobile){
+      setTimeout(()=>{
+        l.getElement()?.classList.add("draw-flow");
+      },100);
+    }
+
+    allLayers[defi.type].push(l);
+    allLabels[defi.type].push(label);
+  }
+
+}).addTo(map);
 
     });
 
