@@ -1,11 +1,10 @@
 const isMobile = window.innerWidth < 768;
 
-const map = L.map("map",{
+const map = L.map("map", {
   zoomControl:false,
   attributionControl:false
 }).setView([47.2184,-1.5536],12);
 
-/* BASE MAP */
 L.tileLayer(
   "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
   {maxZoom:20}
@@ -16,7 +15,7 @@ L.tileLayer(
   {maxZoom:20}
 ).addTo(map);
 
-/* STOCKAGE */
+/* STORAGE */
 const allLayers = {
   done:[],
   future:[],
@@ -24,67 +23,39 @@ const allLayers = {
   annexe:[]
 };
 
-const allLabels = {
-  done:[],
-  future:[],
-  mystery:[],
-  annexe:[]
-};
-
-/* STYLES */
+/* STYLE */
 function styleByType(type){
+
   if(type==="done")
-    return {color:"#7DFF84",weight:4,className:"trace-done"};
+    return {color:"#7DFF84",weight:5};
+
   if(type==="future")
-    return {color:"#FFF47C",weight:6,className:"trace-future"};
+    return {color:"#FFF47C",weight:6,dashArray:"4 12"};
+
   if(type==="mystery")
-    return {color:"#888",weight:5,className:"trace-mystery"};
+    return {color:"#666",weight:5,opacity:.6};
+
   if(type==="annexe")
-    return {color:"##C1FDC4",weight:4,className:"trace-annexe"};
+    return {color:"#00E0B8",weight:4};
 }
 
-/* LABELS */
-function addLabel(layer,defi){
-
-  const center = layer.getBounds
-    ? layer.getBounds().getCenter()
-    : layer.getLatLng();
-
-  let icon="";
-  let cls="map-label";
-
-  if(defi.type==="done"){ icon="🏆 "; cls+=" label-done"; }
-  if(defi.type==="future"){ icon="⏳ "; cls+=" label-future"; }
-  if(defi.type==="mystery"){ icon="❓ "; cls+=" label-mystery"; }
-
-  return L.marker(center,{
-    icon:L.divIcon({
-      className:cls,
-      html:icon+defi.title
-    }),
-    interactive:false
-  }).addTo(map);
-}
-
-/* POPUPS */
+/* POPUP */
 function popupHTML(defi){
 
   if(defi.type==="mystery"){
-    return `<div class="story-popup">
-              <h3>🔒 Défi mystère</h3>
-            </div>`;
+    return `<div><h3>🔒 Défi mystère</h3></div>`;
   }
 
-  let photosHTML = "";
+  let photosHTML="";
 
-  if(defi.photos && defi.photos.length){
+  if(defi.photos){
     defi.photos.forEach(p=>{
-      photosHTML += `<img src="${p}" loading="lazy">`;
+      photosHTML += `<img src="${p}" style="width:100%;margin-top:6px;border-radius:8px;">`;
     });
   }
 
   return `
-    <div class="story-popup">
+    <div>
       <h3>${defi.title}</h3>
       <p>📅 ${defi.date}</p>
       <p>⏱ ${defi.time}</p>
@@ -93,7 +64,7 @@ function popupHTML(defi){
   `;
 }
 
-/* LOAD DEFIS */
+/* LOAD DATA */
 fetch("data/defis.json")
 .then(r=>r.json())
 .then(defis=>{
@@ -121,69 +92,33 @@ fetch("data/defis.json")
           allLayers[defi.type].push(l);
         }
       }).addTo(map);
+
     });
 
   });
 
 });
 
-/* FILTRES */
-const buttons=document.querySelectorAll(".filter-btn");
-
-function showOnly(type){
-  Object.keys(allLayers).forEach(key=>{
-    allLayers[key].forEach(layer=>{
-      type==="all"||key===type
-        ? layer.addTo(map)
-        : map.removeLayer(layer);
-    });
-
-    allLabels[key].forEach(label=>{
-      type==="all"||key===type
-        ? label.addTo(map)
-        : map.removeLayer(label);
-    });
-  });
-}
-
-buttons.forEach(btn=>{
+/* FILTERS */
+document.querySelectorAll(".filter-btn")
+.forEach(btn=>{
   btn.onclick=()=>{
-    buttons.forEach(b=>b.classList.remove("active"));
+
+    document.querySelectorAll(".filter-btn")
+    .forEach(b=>b.classList.remove("active"));
+
     btn.classList.add("active");
-    showOnly(btn.dataset.type);
+
+    const type=btn.dataset.type;
+
+    Object.keys(allLayers).forEach(key=>{
+      allLayers[key].forEach(layer=>{
+        if(type==="all"||key===type)
+          layer.addTo(map);
+        else
+          map.removeLayer(layer);
+      });
+    });
+
   };
 });
-
-/* CLOUDS */
-const cloudLayer=document.getElementById("cloudLayer");
-
-function spawnCloud(){
-  const cloud=document.createElement("div");
-  cloud.className="cloud";
-  cloud.style.width="400px";
-  cloud.style.height="200px";
-  cloud.style.top=Math.random()*80+"%";
-  cloud.style.setProperty("--startX","-400px");
-  cloud.style.setProperty("--endX","120vw");
-  cloud.style.animationDuration=(60+Math.random()*60)+"s";
-  cloudLayer.appendChild(cloud);
-  setTimeout(()=>cloud.remove(),120000);
-}
-
-if(!isMobile){
-  for(let i=0;i<6;i++) spawnCloud();
-  setInterval(spawnCloud,15000);
-}
-const instaEl = document.getElementById("instaCount");
-
-let followers = 2258;
-
-function updateFollowers(){
-  followers += Math.floor(Math.random()*3);
-  instaEl.textContent = followers.toLocaleString();
-}
-
-updateFollowers();
-
-/* 1 fois par jour */
-setInterval(updateFollowers, 86400000);
