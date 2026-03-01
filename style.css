@@ -90,7 +90,7 @@ html, body {
 /* ANIMATION TRACE */
 .draw-flow{
   stroke-dasharray: 12 18;
-  animation: flow 2s linear infinite;
+  animation: flow 6s linear infinite;
 }
 
 @keyframes flow{
