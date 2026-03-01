@@ -1,6 +1,6 @@
 html, body {
-  margin: 0 ;
-  padding: 0 ;
+  margin: 0;
+  padding: 0;
   height: 100%;
   background: #050508;
   font-family: Inter, sans-serif;
@@ -17,7 +17,7 @@ html, body {
   filter:
     grayscale(100%)
     brightness(1.2)
-    sepia(70%)
+    sepia(40%)
     hue-rotate(185deg)
     saturate(350%);
 }
