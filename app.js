@@ -40,7 +40,7 @@ function styleByType(type){
   if(type==="mystery")
     return {color:"#888",weight:5,className:"trace-mystery"};
   if(type==="annexe")
-    return {color:"##C1FDC4",weight:4,className:"trace-annexe"};
+    return {color:"#C1FDC4",weight:4,className:"trace-annexe"};
 }
 
 /* LABELS */
@@ -56,6 +56,7 @@ function addLabel(layer,defi){
   if(defi.type==="done"){ icon="🏆 "; cls+=" label-done"; }
   if(defi.type==="future"){ icon="⏳ "; cls+=" label-future"; }
   if(defi.type==="mystery"){ icon="❓ "; cls+=" label-mystery"; }
+  if(defi.type==="annexe"){ icon="🥇 "; cls+=" label-annexe"; }
 
   return L.marker(center,{
     icon:L.divIcon({
@@ -87,7 +88,7 @@ function popupHTML(defi){
     <div class="story-popup">
       <h3>${defi.title}</h3>
       <p>📅 ${defi.date}</p>
-      <p>⏱ ${defi.time}</p>
+      <p>⏱️ ${defi.time}</p>
       ${photosHTML}
     </div>
   `;
