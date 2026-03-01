@@ -114,7 +114,19 @@
     "insta": "",
     "type": "mystery"
 
-}
+},
+ {
+    "id": "MarathonNantes",
+    "title": "Défi mystère",
+    "date": "??/??/????",
+    "time": "??:??:??",
+    "story": "?",
+    "trace": "marathonnantes.geojson",
+    "photos": [
+    ],
+    "insta": "",
+    "type": "mystery"
 
+}
 
 ]
