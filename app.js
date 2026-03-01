@@ -1,149 +1,326 @@
 const isMobile = window.innerWidth < 768;
 
-const map = L.map("map",{
-zoomControl:false,
-attributionControl:false
-}).setView([47.2184,-1.5536],11);
+const map = L.map("map", {
+  zoomControl: false,
+  attributionControl: false
+}).setView([47.2184, -1.5536], 12);
+
+/* =====================
+   BASE MAP
+===================== */
 
 L.tileLayer(
-"https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-{maxZoom:20}
+  "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+  { maxZoom: 20 }
 ).addTo(map);
 
-const layers={done:[],current:[],future:[],mystery:[]};
-const labels=[];
+L.tileLayer(
+  "https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png",
+  { maxZoom: 20 }
+).addTo(map);
 
-function styleByType(type){
-if(type==="done") return {color:"#7DFF84",weight:5,className:"trace-done"};
-if(type==="current") return {color:"#FFF47C",weight:7,className:"trace-current"};
-if(type==="future") return {color:"#888",weight:4,dashArray:"5 15",className:"trace-future"};
-if(type==="mystery") return {color:"#555",weight:4,className:"trace-mystery"};
+/* =====================
+   STOCKAGE FILTRES
+===================== */
+
+const allLayers = { done: [], future: [], mystery: [] };
+const allLabels = { done: [], future: [], mystery: [] };
+
+/* =====================
+   STYLES
+===================== */
+
+function styleByType(type) {
+  if (type === "done") return { color:"#fff", weight:3, className:"trace-done" };
+  if (type === "future") return { color:"#4f8cff", weight:7, className:"trace-future" };
+  if (type === "mystery") return { color:"#888", weight:6, className:"trace-mystery" };
+  return { color:"#00cfa2", weight:4 };
 }
 
-function addLabel(layer,defi){
-const center=layer.getBounds().getCenter();
-let cls="map-label ";
-let icon="";
+/* =====================
+   LABELS
+===================== */
 
-if(defi.type==="done"){cls+="label-done";icon="🏆 ";}
-if(defi.type==="current"){cls+="label-current";icon="⏳ ";}
-if(defi.type==="future"){cls+="label-future";icon="❓ ";}
-if(defi.type==="mystery"){cls+="label-mystery";icon="🔒 ";}
+function addLabel(layer, defi) {
+  const pos = layer.getBounds
+    ? layer.getBounds().getCenter()
+    : layer.getLatLng();
 
-const label=L.marker(center,{
-icon:L.divIcon({
-className:cls,
-html:icon+defi.title
-}),
-interactive:false
-}).addTo(map);
+  let icon="", cls="map-label";
 
-labels.push(label);
+  if(defi.type==="done"){ icon="🏆 "; cls+=" label-done"; }
+  if(defi.type==="future"){ icon="⏳ "; cls+=" label-future"; }
+  if(defi.type==="mystery"){ icon="❓ "; cls+=" label-mystery"; }
+
+  return L.marker(pos,{
+    icon: L.divIcon({ className: cls, html: icon + defi.title }),
+    interactive:false
+  }).addTo(map);
 }
 
-function showPanel(defi){
-if(defi.type!=="done" && defi.type!=="current") return;
+/* =====================
+   POPUPS
+===================== */
 
-const panel=document.getElementById("infoPanel");
+function popupHTML(defi){
 
-panel.innerHTML=`
-<h2>${defi.title}</h2>
-<div class="time">⏱ ${defi.time}</div>
-<a class="gpx-btn" href="data/${defi.trace.replace(".geojson",".gpx")}" download>
-Télécharger GPX
-</a>
-`;
+  if(defi.type==="mystery"){
+    return `
+      <div class="story-popup">
+        <h3>❓ Défi mystère</h3>
+      </div>`;
+  }
 
-panel.classList.remove("hidden");
+  return `
+    <div class="story-popup">
+      <h3>${defi.title}</h3>
+      <p>📅 ${defi.date}</p>
+      <p>⏱ Temps : <strong>${defi.time}</strong></p>
+    </div>
+  `;
+  l.bindPopup(popupHTML(defi));
 }
+
+
+/* =====================
+   CHARGEMENT DES DEFIS
+===================== */
 
 fetch("data/defis.json")
-.then(r=>r.json())
-.then(defis=>{
+.then(r => r.json())
+.then(defis => {
 
-defis.forEach(defi=>{
+  defis.forEach(defi => {
 
-fetch("data/"+defi.trace)
-.then(r=>r.json())
-.then(trace=>{
+    fetch("data/" + defi.trace)
+    .then(r => r.json())
+    .then(trace => {
 
-L.geoJSON(trace,{
-style:()=>styleByType(defi.type),
-onEachFeature:(f,l)=>{
+      L.geoJSON(trace,{
+        style: () => styleByType(defi.type),
+        onEachFeature: (f, l) => {
 
-layers[defi.type]?.push(l);
+  const label = addLabel(l, defi);
+  l.on("click", () => openStory(defi));
+  console.log(defi);
 
-l.on("click",()=>showPanel(defi));
+  allLayers[defi.type].push(l);
+  allLabels[defi.type].push(label);
 
+  registerExploreLayer(l);
+
+  l.on("mouseover", () => {
+  l.setStyle({ weight: 10 });
+});
+
+l.on("mouseout", () => {
+  l.setStyle(styleByType(defi.type));
+});
+
+  // animation continue
 if(!isMobile){
-setTimeout(()=>{
-l.getElement()?.classList.add("draw-flow");
-},100);
+  setTimeout(() => {
+    l.getElement()?.classList.add("draw-flow");
+  }, 100);
 }
 
-addLabel(l,defi);
+          registerExploreLayer(l);
+          
+        }
+      }).addTo(map);
 
-}
-}).addTo(map);
+    });
+
+  });
 
 });
 
-});
+/* =====================
+   FILTRES
+===================== */
 
-});
+const filterButtons = document.querySelectorAll(".filter-btn");
 
-/* FILTERS */
-document.querySelectorAll(".filters button")
-.forEach(btn=>{
-btn.onclick=()=>{
-document.querySelectorAll(".filters button")
-.forEach(b=>b.classList.remove("active"));
-btn.classList.add("active");
+function showOnly(type){
+  Object.keys(allLayers).forEach(key=>{
 
-const type=btn.dataset.type;
+    allLayers[key].forEach(layer=>{
+      type==="all" || key===type ? layer.addTo(map) : map.removeLayer(layer);
+    });
 
-Object.keys(layers).forEach(k=>{
-layers[k].forEach(layer=>{
-if(type==="all"||k===type) layer.addTo(map);
-else map.removeLayer(layer);
-});
-});
-};
-});
+    allLabels[key].forEach(label=>{
+      type==="all" || key===type ? label.addTo(map) : map.removeLayer(label);
+    });
 
-/* FOLLOWERS */
-const followersEl=document.getElementById("followersCount");
-let followers=1500;
-
-function updateFollowers(){
-followers+=Math.floor(Math.random()*5);
-followersEl.textContent=followers.toLocaleString();
+  });
 }
 
-updateFollowers();
-setInterval(updateFollowers,86400000);
+filterButtons.forEach(btn=>{
+  btn.addEventListener("click", ()=>{
 
-/* LABEL OVERLAP */
-function preventOverlap(){
-const visible=[];
-labels.forEach(label=>{
-const el=label.getElement();
-if(!el) return;
-el.style.display="block";
-const rect=el.getBoundingClientRect();
-let overlap=false;
+    filterButtons.forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
 
-visible.forEach(v=>{
-const r=v.getBoundingClientRect();
-if(!(rect.right<r.left||rect.left>r.right||
-rect.bottom<r.top||rect.top>r.bottom)){
-overlap=true;
-}
+    showOnly(btn.dataset.type);
+  });
 });
 
-if(overlap) el.style.display="none";
-else visible.push(el);
-});
+/* =====================
+   COMPTEUR INSTA
+===================== */
+
+const followers = 1415;
+let current = 0;
+const el = document.getElementById("aventurax_off");
+
+const anim = setInterval(()=>{
+  current += Math.ceil(followers/80);
+  if(current>=followers){
+    current=followers;
+    clearInterval(anim);
+  }
+  el.textContent=current.toLocaleString();
+},20);
+
+/* =====================
+   AUTO EXPLORATION
+===================== */
+
+let autoExplore=false;
+let exploreIndex=0;
+const exploreLayers=[];
+
+function registerExploreLayer(layer){
+  exploreLayers.push(layer);
 }
 
-map.on("moveend zoomend",preventOverlap);
+function toggleAutoExplore(){
+  if(exploreLayers.length===0) return;
+  autoExplore=!autoExplore;
+  if(autoExplore) runExplore();
+}
+
+function runExplore(){
+  if(!autoExplore) return;
+
+  const layer = exploreLayers[exploreIndex];
+
+  const center = layer.getBounds
+    ? layer.getBounds().getCenter()
+    : layer.getLatLng();
+
+  map.flyTo(center,13,{duration:2});
+  layer.openPopup?.();
+
+  exploreIndex = (exploreIndex+1)%exploreLayers.length;
+
+  setTimeout(runExplore,3500);
+}
+
+document.getElementById("autoExploreBtn")
+  ?.addEventListener("click", toggleAutoExplore);
+// =====================
+// CLOUDS
+// =====================
+const cloudLayer = document.getElementById("cloudLayer");
+
+function rand(min, max){
+  return Math.random() * (max - min) + min;
+}
+
+function spawnCloud(){
+  const cloud = document.createElement("div");
+  cloud.className = "cloud";
+
+  const size = rand(260, 520);
+  cloud.style.width = size + "px";
+  cloud.style.height = size * rand(0.45, 0.7) + "px";
+
+  cloud.style.top = rand(-10, 90) + "%";
+
+  cloud.style.opacity = rand(0.18, 0.45);
+
+  cloud.style.setProperty("--startX", rand(-800, -400) + "px");
+  cloud.style.setProperty("--endX", rand(110, 140) + "vw");
+  cloud.style.setProperty("--drift", rand(-80, 80) + "px");
+
+  cloud.style.animationDuration = rand(70, 160) + "s";
+
+  cloudLayer.appendChild(cloud);
+
+  setTimeout(()=>cloud.remove(), 220000);
+
+  if(!isMobile){
+
+  for(let i=0;i<9;i++) spawnCloud();
+  setInterval(spawnCloud, 16000);
+
+  map.on("zoom", ()=>{
+    const z = map.getZoom();
+    cloudLayer.style.opacity = Math.max(0, 1 - (z - 10) * 0.25);
+  });
+}
+
+/* ciel déjà vivant */
+for(let i=0;i<9;i++) spawnCloud();
+
+/* génération organique */
+setInterval(spawnCloud, 16000);
+
+map.on("zoom", ()=>{
+  const z = map.getZoom();
+  cloudLayer.style.opacity = Math.max(0, 1 - (z - 10) * 0.25);
+  });
+  }
+
+map.on("zoomend", () => {
+
+  const z = map.getZoom();
+
+  Object.values(allLabels).flat().forEach(label => {
+
+    const el = label.getElement();
+    if(!el) return;
+
+    if(z < 11){
+      el.style.display = "none";
+    } else {
+      el.style.display = "block";
+      el.style.fontSize = (z * 1.2) + "px";
+    }
+
+  });
+
+});
+function preventOverlap() {
+
+  const visibleLabels = [];
+
+  Object.values(allLabels).flat().forEach(label => {
+
+    const el = label.getElement();
+    if(!el || el.style.display === "none") return;
+
+    const rect = el.getBoundingClientRect();
+    let overlap = false;
+
+    visibleLabels.forEach(v => {
+      const r = v.getBoundingClientRect();
+      if(!(rect.right < r.left ||
+           rect.left > r.right ||
+           rect.bottom < r.top ||
+           rect.top > r.bottom)){
+        overlap = true;
+      }
+    });
+
+    if(overlap){
+      el.style.display = "none";
+    } else {
+      visibleLabels.push(el);
+    }
+
+  });
+}
+
+map.on("moveend zoomend", preventOverlap);
