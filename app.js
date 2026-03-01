@@ -272,11 +272,3 @@ map.on("zoom", ()=>{
   cloudLayer.style.opacity = Math.max(0, 1 - (z - 10) * 0.25);
   });
   }
-
-/* Rendu carte plus gris / océan plus clair */
-.leaflet-tile {
-  filter:
-    brightness(1.3)
-    contrast(0.7)
-    grayscale(100%);
-}
