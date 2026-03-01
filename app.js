@@ -272,3 +272,55 @@ map.on("zoom", ()=>{
   cloudLayer.style.opacity = Math.max(0, 1 - (z - 10) * 0.25);
   });
   }
+
+map.on("zoomend", () => {
+
+  const z = map.getZoom();
+
+  Object.values(allLabels).flat().forEach(label => {
+
+    const el = label.getElement();
+    if(!el) return;
+
+    if(z < 11){
+      el.style.display = "none";
+    } else {
+      el.style.display = "block";
+      el.style.fontSize = (z * 1.2) + "px";
+    }
+
+  });
+
+});
+function preventOverlap() {
+
+  const visibleLabels = [];
+
+  Object.values(allLabels).flat().forEach(label => {
+
+    const el = label.getElement();
+    if(!el || el.style.display === "none") return;
+
+    const rect = el.getBoundingClientRect();
+    let overlap = false;
+
+    visibleLabels.forEach(v => {
+      const r = v.getBoundingClientRect();
+      if(!(rect.right < r.left ||
+           rect.left > r.right ||
+           rect.bottom < r.top ||
+           rect.top > r.bottom)){
+        overlap = true;
+      }
+    });
+
+    if(overlap){
+      el.style.display = "none";
+    } else {
+      visibleLabels.push(el);
+    }
+
+  });
+}
+
+map.on("moveend zoomend", preventOverlap);
