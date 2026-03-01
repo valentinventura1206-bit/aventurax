@@ -168,9 +168,6 @@ fetch("data/defis.json")
   popup.querySelector(".popup-close").onclick = () => popup.remove();
 }
 
-              // Cliquable sur le tracé (done/annexe surtout)
-              l.on("click", () => l.openPopup());
-
               // Hover desktop
               l.on("mouseover", () => l.setStyle({ weight: 9 }));
               l.on("mouseout", () => l.setStyle(styleByType(defi.type)));
