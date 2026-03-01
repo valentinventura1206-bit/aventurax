@@ -310,3 +310,12 @@ html, body {
 #map {
   will-change: transform;
 }
+
+.leaflet-tile {
+  filter:
+    grayscale(100%)
+    brightness(1.2)
+    sepia(40%)
+    hue-rotate(185deg)
+    saturate(350%);
+}
