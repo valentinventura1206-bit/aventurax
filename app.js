@@ -108,33 +108,19 @@ fetch("data/defis.json")
         style:()=>styleByType(defi.type),
         onEachFeature:(f,l)=>{
 
-          const label=addLabel(l,defi);
-          l.bindPopup(popupHTML(defi));
+          if(defi.type!=="mystery"){
+            l.bindPopup(popupHTML(defi));
+          }
 
-          l.on("mouseover",()=>{
-            l.setStyle({weight:8});
-          });
-
-          l.on("mouseout",()=>{
-            l.setStyle(styleByType(defi.type));
-          });
-
-          if(!isMobile){
+          if(!isMobile && defi.type!=="mystery"){
             setTimeout(()=>{
               l.getElement()?.classList.add("draw-flow");
             },100);
           }
 
           allLayers[defi.type].push(l);
-          allLabels[defi.type].push(label);
         }
-        l.bindPopup(popupHTML(defi));
-
-if(defi.type==="done" || defi.type==="annexe"){
-  l.on("click", ()=> l.openPopup());
-}
       }).addTo(map);
-
     });
 
   });
