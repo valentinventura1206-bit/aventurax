@@ -97,57 +97,56 @@ function popupHTML(defi) {
    CHARGEMENT DES DEFIS
 ===================== */
 fetch("data/defis.json")
-  .then((r) => r.json())
-  .then((defis) => {
-    defis.forEach((defi) => {
+  .then(r => r.json())
+  .then(defis => {
+
+    defis.forEach(defi => {
+
       fetch("data/" + defi.trace)
-        .then((r) => r.json())
-        .then((trace) => {
+        .then(r => r.json())
+        .then(trace => {
+
           L.geoJSON(trace, {
             style: () => styleByType(defi.type),
+
             onEachFeature: (f, l) => {
 
-              // Label
               const label = addLabel(l, defi);
 
-              // Stockage filtres
-              if (!allLayers[defi.type]) return;
-              allLayers[defi.type].push(l);
-              allLabels[defi.type].push(label);
+              if (defi.type !== "mystery") {
+                l.bindPopup(popupHTML(defi));
 
-              // Mystère : flou/figé/non cliquable
-              if (defi.type === "mystery") {
-                l.options.interactive = false;
-                // (Leaflet applique interactive sur l’élément SVG après render)
-                setTimeout(() => {
-                  const el = l.getElement?.();
-                  if (el) el.style.pointerEvents = "none";
-                }, 0);
-                return;
+                if (defi.type === "done" || defi.type === "annexe") {
+                  l.on("click", () => l.openPopup());
+                }
               }
 
-              // Popup pour done / future / annexe
-              l.bindPopup(popupHTML(defi), { closeButton: true, autoPan: true });
+              l.on("mouseover", () => {
+                l.setStyle({ weight: 8 });
+              });
 
-              // Cliquable sur le tracé (done/annexe surtout)
-              l.on("click", () => l.openPopup());
+              l.on("mouseout", () => {
+                l.setStyle(styleByType(defi.type));
+              });
 
-              // Hover desktop
-              l.on("mouseover", () => l.setStyle({ weight: 9 }));
-              l.on("mouseout", () => l.setStyle(styleByType(defi.type)));
+              if (!isMobile) {
+                setTimeout(() => {
+                  l.getElement()?.classList.add("draw-flow");
+                }, 100);
+              }
 
-              // Animation de tracé (pas sur mobile si tu veux + fluide)
-              // -> On la garde aussi sur mobile, mais si ça lag chez toi, repasse à !isMobile
-              setTimeout(() => {
-                l.getElement?.()?.classList.add("draw-flow");
-              }, 80);
-            },
+              allLayers[defi.type].push(l);
+              allLabels[defi.type].push(label);
+            }
+
           }).addTo(map);
-        })
-        .catch((e) => console.error("Erreur trace:", defi.trace, e));
+
+        });
+
     });
+
   })
-  .catch((e) => console.error("Erreur defis.json:", e));
+  .catch(e => console.error("Erreur defis.json:", e));
 
 /* =====================
    FILTRES
