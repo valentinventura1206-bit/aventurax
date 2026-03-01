@@ -54,16 +54,16 @@ html, body {
 
 /* Tracés */
 .trace-done {
-  filter: drop-shadow(0 0 6px white);
+  filter: drop-shadow(0 0 6px #7DFF84);
 }
 
 .trace-future {
   stroke-dasharray: 5 12;
-  filter: drop-shadow(0 0 6px #4f8cff);
+  filter: drop-shadow(0 0 6px #FFF47C);
 }
 
 .trace-mystery {
-  filter: blur(2px);
+  filter: blur(4px);
   stroke-dasharray: 4 10;
   opacity: .5;
 }
@@ -80,8 +80,8 @@ html, body {
   pointer-events: none;
 }
 
-.label-done { color: #ffd700; }
-.label-future { color: #6ea8ff; }
+.label-done { color: #7DFF84; }
+.label-future { color: #FFF47C; }
 .label-mystery { color: #aaa; }
 
 /* Progress */
