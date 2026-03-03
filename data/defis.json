@@ -16,7 +16,7 @@
   },
   {
     "id": "mont-nantes",
-    "title": "Le Mont-Nantes",
+    "title": "Ascension du Mont Nantes",
     "date": "22/11/2025",
     "time": "08:45:22",
     "story": "Une ascension difficile sous la pluie, mais une vue incroyable au sommet.",
@@ -127,6 +127,16 @@
     "insta": "",
     "type": "mystery"
 
+},
+  {
+    "id": "semicrocs",
+    "title": "Semi-Crocs",
+    "date": "08/02/2026",
+    "time": "01:49:35",
+    "trace": "semicrocs.geojson",
+    "photos": [
+],
+    "type": "done"
 }
 
 ]
